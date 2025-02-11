@@ -13,13 +13,52 @@ import { Input } from "@alfalab/core-components/input";
 import { AmountInput } from "@alfalab/core-components/amount-input";
 import { Slider } from "@alfalab/core-components/slider";
 
+const marks = [
+  { value: 100, position: 0 },
+  { value: 1000, position: 33.3 },
+  { value: 10000, position: 66.6 },
+  { value: 20000, position: 100 },
+];
+
+const scaleValue = (value: number) => {
+  for (let i = 0; i < marks.length - 1; i++) {
+    const minMark = marks[i];
+    const maxMark = marks[i + 1];
+
+    if (value >= minMark.value && value <= maxMark.value) {
+      const ratio = (value - minMark.value) / (maxMark.value - minMark.value);
+      return minMark.position + ratio * (maxMark.position - minMark.position);
+    }
+  }
+
+  return 100;
+};
+
+const inverseScaleValue = (percent: number) => {
+  for (let i = 0; i < marks.length - 1; i++) {
+    const minMark = marks[i];
+    const maxMark = marks[i + 1];
+
+    if (percent >= minMark.position && percent <= maxMark.position) {
+      const ratio =
+        (percent - minMark.position) / (maxMark.position - minMark.position);
+      return Math.round(
+        minMark.value + ratio * (maxMark.value - minMark.value),
+      );
+    }
+  }
+
+  return 20000;
+};
+
 export const App = () => {
   const [loading, setLoading] = useState(false);
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
   const [amount, setAmount] = useState<number | null>(null);
 
   const [login, setLogin] = useState("");
-  const [value, setValue] = useState(2);
+  const [value, setValue] = useState(100);
+  const [sliderValue, setSliderValue] = useState(scaleValue(value));
   const [email, setEmail] = useState("");
   const [coloredIndex, setColoredIndex] = useState(0);
 
@@ -31,6 +70,20 @@ export const App = () => {
       setThx(true);
       setLoading(false);
     });
+  };
+
+  const handleInputChange = (value: string) => {
+    let newValue = parseInt(value, 10) || 100;
+    newValue = Math.max(100, Math.min(20000, newValue));
+    setValue(newValue);
+    setSliderValue(scaleValue(newValue));
+  };
+
+  const handleSliderChange = (value: string) => {
+    const newSliderValue = parseFloat(value);
+
+    setSliderValue(newSliderValue);
+    setValue(inverseScaleValue(newSliderValue));
   };
 
   if (thxShow) {
@@ -72,24 +125,17 @@ export const App = () => {
         <AmountInput
           value={amount}
           onChange={(_, payload) => {
-            setAmount(payload.value);
+            handleInputChange(String(payload.value));
 
             if (payload.value !== null) {
-              if (payload.value < 1000) {
-                setValue(2);
+              if (payload.value >= 100 && payload.value <= 1000) {
                 setColoredIndex(0);
-              } else if (payload.value >= 1000 && payload.value < 10000) {
-                setValue(24);
+              } else if (payload.value > 1000 && payload.value <= 5000) {
                 setColoredIndex(1);
-              } else if (payload.value >= 10000 && payload.value < 25000) {
-                setValue(45);
+              } else if (payload.value > 5000 && payload.value <= 10000) {
                 setColoredIndex(2);
-              } else if (payload.value >= 25000 && payload.value < 50000) {
-                setValue(67);
+              } else if (payload.value > 10000) {
                 setColoredIndex(3);
-              } else if (payload.value >= 50000) {
-                setValue(98);
-                setColoredIndex(4);
               }
             }
           }}
@@ -118,7 +164,7 @@ export const App = () => {
           Расчёт кэшбэка
         </Typography.Text>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {[0, 3, 4, 5, 6].map((num, index) => (
+          {[0, 3, 4, 5].map((num, index) => (
             <Typography.Text
               color={coloredIndex === index ? "negative" : "primary"}
               weight={coloredIndex === index ? "bold" : "regular"}
@@ -126,22 +172,20 @@ export const App = () => {
               view="primary-medium"
               key={num}
               defaultMargins={false}
-              style={{
-                width: "45px",
-              }}
             >
-              {num} %
+              {num}%
             </Typography.Text>
           ))}
         </div>
         <Slider
+          step={0.1}
           size={4}
-          value={value}
-          onChange={(e) => setValue(e.value)}
+          value={sliderValue}
+          onChange={(e) => handleSliderChange(String(e.value))}
           disabled={true}
         />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {[100, 1000, 10000, 25000, 50000].map((num) =>
+          {[100, 1000, 10000, 20000].map((num) =>
             num === 50000 ? (
               <Typography.Text tag="p" view="primary-medium" key={num}>
                 {num}₽ +
