@@ -126,6 +126,7 @@ export const App = () => {
           value={amount}
           onChange={(_, payload) => {
             handleInputChange(String(payload.value));
+            setAmount(payload.value);
 
             if (payload.value !== null) {
               if (payload.value >= 100 && payload.value <= 1000) {
@@ -146,10 +147,6 @@ export const App = () => {
           bold={false}
           block={true}
           minority={1}
-          clear={amount !== 0}
-          onClear={() => {
-            setAmount(0);
-          }}
         />
         <Typography.Text tag="p" view="primary-small" color="secondary">
           Минимальная сумма 100₽
