@@ -106,7 +106,7 @@ export const App = () => {
           }}
         />
         <Typography.Text tag="p" view="primary-small" color="secondary">
-          Минимальная сумма 100Р
+          Минимальная сумма 100₽
         </Typography.Text>
         <Gap size={2} />
         <Typography.Text
@@ -144,11 +144,11 @@ export const App = () => {
           {[100, 1000, 10000, 25000, 50000].map((num) =>
             num === 50000 ? (
               <Typography.Text tag="p" view="primary-medium" key={num}>
-                {num}Р +
+                {num}₽ +
               </Typography.Text>
             ) : (
               <Typography.Text tag="p" view="primary-medium" key={num}>
-                {num}Р
+                {num}₽
               </Typography.Text>
             ),
           )}
@@ -184,7 +184,7 @@ export const App = () => {
           loading={loading}
           onClick={submit}
         >
-          {!amount || amount < 100 ? "Оплатить" : `Оплатить ${amount}Р`}
+          {!amount || amount < 100 ? "Оплатить" : `Оплатить ${amount}₽`}
         </ButtonMobile>
       </div>
     </>
