@@ -12,6 +12,7 @@ import { Gap } from "@alfalab/core-components/gap";
 import { Input } from "@alfalab/core-components/input";
 import { AmountInput } from "@alfalab/core-components/amount-input";
 import { Slider } from "@alfalab/core-components/slider";
+import { sendDataToGA } from "./utils/events.ts";
 
 const marks = [
   { value: 100, position: 0 },
@@ -66,7 +67,7 @@ export const App = () => {
   const submit = () => {
     setLoading(true);
 
-    Promise.resolve().then(() => {
+    sendDataToGA({payment_sum: String(value)}).then(() => {
       LS.setItem(LSKeys.ShowThx, true);
       setThx(true);
       setLoading(false);
