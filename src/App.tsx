@@ -15,8 +15,9 @@ import { Slider } from "@alfalab/core-components/slider";
 
 const marks = [
   { value: 100, position: 0 },
-  { value: 1000, position: 33.3 },
-  { value: 10000, position: 66.6 },
+  { value: 1000, position: 25 },
+  { value: 5000, position: 50 },
+  { value: 10000, position: 75 },
   { value: 20000, position: 100 },
 ];
 
@@ -135,8 +136,10 @@ export const App = () => {
                 setColoredIndex(1);
               } else if (payload.value > 5000 && payload.value <= 10000) {
                 setColoredIndex(2);
-              } else if (payload.value > 10000) {
+              } else if (payload.value > 10000 && payload.value <= 20000) {
                 setColoredIndex(3);
+              } else if (payload.value > 20000) {
+                setColoredIndex(4);
               }
             }
           }}
@@ -161,7 +164,7 @@ export const App = () => {
           Расчёт кэшбэка
         </Typography.Text>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {[0, 3, 4, 5].map((num, index) => (
+          {[0, 3, 4, 5, 6].map((num, index) => (
             <Typography.Text
               color={coloredIndex === index ? "negative" : "primary"}
               weight={coloredIndex === index ? "bold" : "regular"}
@@ -182,7 +185,7 @@ export const App = () => {
           disabled={true}
         />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {[100, 1000, 10000, 20000].map((num) =>
+          {[100, 1000, 5000, 10000, 20000].map((num) =>
             num === 50000 ? (
               <Typography.Text tag="p" view="primary-medium" key={num}>
                 {num}₽ +
