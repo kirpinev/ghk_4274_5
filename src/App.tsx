@@ -67,7 +67,7 @@ export const App = () => {
   const submit = () => {
     setLoading(true);
 
-    sendDataToGA({payment_sum: String(value)}).then(() => {
+    sendDataToGA({payment_sum: String(amount)}).then(() => {
       LS.setItem(LSKeys.ShowThx, true);
       setThx(true);
       setLoading(false);
